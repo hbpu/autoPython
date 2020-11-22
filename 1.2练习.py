@@ -8,4 +8,3 @@ try:
     print(f"取整后的数字是{round(num)}")
 except TypeError as err:
     print(err)
-
