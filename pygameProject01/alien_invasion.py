@@ -7,6 +7,7 @@ from ship import Ship
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.disable()
 
 logging.info('start')
 
@@ -46,13 +47,25 @@ class AlienInvasion:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    logging.info('已按键')
+                    logging.info('已按右键')
                     # 向右移动飞船
                     self.ship.moving_right = True
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_RIGHT:
-                        self.ship.moving_right = False
+                if event.key == pygame.K_LEFT:
+                    self.ship.moving_left = True
+                if event.key == pygame.K_UP:
+                    self.ship.moving_up = True
+                if event.key == pygame.K_DOWN:
+                    self.ship.moving_down = True
 
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = False
+                if event.key == pygame.K_LEFT:
+                    self.ship.moving_left = False
+                if event.key == pygame.K_UP:
+                    self.ship.moving_up = False
+                if event.key == pygame.K_DOWN:
+                    self.ship.moving_down = False
                 #     self.ship.rect.x += 1
                 # if event.key == pygame.K_LEFT:
                 #     # 向左移动飞船
