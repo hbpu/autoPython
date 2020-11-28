@@ -5,5 +5,5 @@ class Settings:
         """初始化"""
         self.screen_width = 1200
         self.screen_height = 800
-        self.bg_color = (230, 230, 230)
+        self.bg_color = (148, 193, 232)
 
