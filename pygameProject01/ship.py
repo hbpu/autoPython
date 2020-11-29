@@ -6,6 +6,7 @@ class Ship:
 
     def __init__(self, ai_game):
         self.screen = ai_game.screen
+        self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
 
         # 加载飞船图像并获取外接矩形
@@ -14,6 +15,10 @@ class Ship:
 
         # 初始化的飞船都放在底部中间位置
         self.rect.midbottom = self.screen_rect.midbottom
+
+        # 属性x中存储小数值
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
 
         # 移动标志
         self.moving_right = False
@@ -25,11 +30,15 @@ class Ship:
         self.screen.blit(self.image, self.rect)
 
     def update(self):
-        if self.moving_right:
-            self.rect.x += 1
-        if self.moving_left:
-            self.rect.x -= 1
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.x += self.settings.ship_speed
+        if self.moving_left and self.rect.left > 0:
+            self.x -= self.settings.ship_speed
         if self.moving_up:
-            self.rect.y -= 1
+            self.y -= self.settings.ship_speed
         if self.moving_down:
-            self.rect.y += 1
+            self.y += self.settings.ship_speed
+
+        # 根据self.x更新rect对象
+        self.rect.x = self.x
+        self.rect.y = self.y

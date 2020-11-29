@@ -4,6 +4,7 @@ import pygame
 
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -24,6 +25,7 @@ class AlienInvasion:
 
         # 在屏幕绘制完成后生成飞船
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group()
 
         # 设置背景颜色
         self.bg_color = self.settings.bg_color
@@ -35,7 +37,10 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update()
-            self._updata_screen()
+            self._update_bullets()
+            self._update_screen()
+
+
 
 
 
@@ -46,26 +51,10 @@ class AlienInvasion:
                 logging.info('esc')
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    logging.info('已按右键')
-                    # 向右移动飞船
-                    self.ship.moving_right = True
-                if event.key == pygame.K_LEFT:
-                    self.ship.moving_left = True
-                if event.key == pygame.K_UP:
-                    self.ship.moving_up = True
-                if event.key == pygame.K_DOWN:
-                    self.ship.moving_down = True
+                self._check_keydown_events(event)
 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.moving_right = False
-                if event.key == pygame.K_LEFT:
-                    self.ship.moving_left = False
-                if event.key == pygame.K_UP:
-                    self.ship.moving_up = False
-                if event.key == pygame.K_DOWN:
-                    self.ship.moving_down = False
+                self._check_keyup_events(event)
                 #     self.ship.rect.x += 1
                 # if event.key == pygame.K_LEFT:
                 #     # 向左移动飞船
@@ -77,11 +66,52 @@ class AlienInvasion:
                 #     # 向下移动飞船
                 #     self.ship.rect.y += 1
 
+    def _check_keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            logging.info('已按右键')
+            # 向右移动飞船
+            self.ship.moving_right = True
+        if event.key == pygame.K_LEFT:
+            self.ship.moving_left = True
+        if event.key == pygame.K_UP:
+            self.ship.moving_up = True
+        if event.key == pygame.K_DOWN:
+            self.ship.moving_down = True
+        if event.key == pygame.K_q:
+            sys.exit()
+        if event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
-    def _updata_screen(self):
+    def _check_keyup_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.moving_right = False
+        if event.key == pygame.K_LEFT:
+            self.ship.moving_left = False
+        if event.key == pygame.K_UP:
+            self.ship.moving_up = False
+        if event.key == pygame.K_DOWN:
+            self.ship.moving_down = False
+
+    def _fire_bullet(self):
+        """创建一个新子弹，并加入编组"""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+
+        self.bullets.update()
+        # 删除消失的子弹
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+        logging.info(len(self.bullets))
+
+    def _update_screen(self):
         # 每次循环都重绘屏幕
         self.screen.fill(self.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
 
         # 让最近绘制的屏幕可见。
         pygame.display.flip()
