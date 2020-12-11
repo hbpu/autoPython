@@ -1,5 +1,8 @@
 import random, sys
 
+print("口算100道题天天练")
+
+print("加油！")
 for i in range(100):
     num01 = random.randint(1, 100)
     num02 = random.randint(1, 100)
